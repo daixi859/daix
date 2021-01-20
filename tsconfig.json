@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "allowJs": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules",
+    "**/lib",
+    "**/es",
+    "**/dist",
+    "**/typings",
+    "**/__test__",
+    "**/test",
+    "**/src",
+    "**/demo"
+  ]
+}
