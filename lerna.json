@@ -6,6 +6,7 @@
       "includeMergedTags": true
     },
     "publish": {
+      "ignoreChanges": ["ignored-file", "*.md"],
       "registry": "https://registry.npmjs.org/"
     }
   },

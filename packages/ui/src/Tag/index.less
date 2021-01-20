@@ -1,3 +1,66 @@
-.app {
-  background-color: red;
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 22px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 0 4px;
+}
+
+.tag-default {
+  padding: 0 3px;
+  line-height: 18px;
+  color: #f85300;
+  border-color: #f85300;
+}
+.tag-red {
+  color: #ff7f62;
+  border-color: #ffece8;
+  background-color: #ffece8;
+}
+
+.tag-blue {
+  color: #5993f5;
+  border-color: #e5edfb;
+  background-color: #e5edfb;
+}
+
+.img(@img, @bg) {
+  position: relative;
+  color: #fff;
+  padding-left: 32px;
+  z-index: 1;
+  &::before {
+    content: '';
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background-image: @img;
+    left: 0;
+    top: -3px;
+  }
+  &::after {
+    content: '';
+    z-index: -1;
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 2px;
+    background: @bg;
+  }
+}
+
+.tag-top10 {
+  .img(
+    inline('../assets/images/top10_2020.png'),
+    linear-gradient(90deg, #fb8e4d 0%, #f06c68 100%)
+  );
+}
+.tag-quality {
+  .img(
+    inline('../assets/images/high_quality_2020.png'),
+    linear-gradient(90deg, #b68ef8 0%, #916de3 100%)
+  );
 }

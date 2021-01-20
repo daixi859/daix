@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "father-build"
+    "build": "father-build",
+    "release": "npm run build && lerna publish"
   },
   "license": "MIT",
   "dependencies": {
