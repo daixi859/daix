@@ -1,3 +1,5 @@
+import dispatcher from '../dispatcher';
+
 const initProperty = {
   maxHp: 100,
   hp: 100,
@@ -28,14 +30,17 @@ export default class Biology {
 
   property = { ...initProperty };
 
+  send: ReturnType<typeof dispatcher>['send'];
+
   constructor(opts: {
-    type?: BiologyType;
     name: string;
+    send: ReturnType<typeof dispatcher>['send'];
+    type?: BiologyType;
     property?: Partial<typeof initProperty>;
   }) {
     this.id = id++;
-    const { name, property = {}, type = BiologyType.hero } = opts;
-
+    const { send, name, property = {}, type = BiologyType.hero } = opts;
+    this.send = send;
     this.type = type;
     this.name = name;
     if (property.hp !== undefined && property.maxHp === undefined) {
