@@ -1,4 +1,5 @@
 import dispatcher from '../dispatcher';
+import Skill from '../skills/Skill';
 
 const initProperty = {
   maxHp: 100,
@@ -22,6 +23,8 @@ export default class Biology {
   name = '';
   type = BiologyType.hero;
   died = false;
+
+  skills: Skill = [];
 
   stat = {
     hurt: 0,
@@ -64,6 +67,22 @@ export default class Biology {
     }
   }
 
+  getAttack() {
+    let isCrit = this.property.crit / 100 >= Math.random();
+
+    return isCrit
+      ? this.property.attack * this.property.cirtDamage
+      : this.property.attack;
+  }
+
+  get crit() {
+    return this.property.crit;
+  }
+
+  get cirtDamage() {
+    return this.property.cirtDamage;
+  }
+
   protected beDefend(damage: number) {
     return Math.floor(
       damage *
@@ -72,10 +91,9 @@ export default class Biology {
   }
 
   beAttacked(enemy: Biology, damage?: number) {
-    damage = damage !== undefined ? damage : enemy.attack;
-    // damage = this.beDefend(damage);
-    // let prevhp = this.property.hp;
-    // this.hp = this.property.hp - damage;
+    this.hp =
+      this.property.hp -
+      this.beDefend(damage !== undefined ? damage : enemy.getAttack());
   }
 
   beSkillAttacked(h: Biology, damage: number) {}

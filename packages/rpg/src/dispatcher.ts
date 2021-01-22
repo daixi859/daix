@@ -1,4 +1,4 @@
-import Biology, { BiologyType } from './heroes/Biology';
+import Biology, { BiologyType } from './biology/Biology';
 
 function dispatcher() {
   let started = false;
@@ -12,7 +12,7 @@ function dispatcher() {
       let enemies = b.type === BiologyType.hero ? monsters : heroes;
       let enemy = enemies.find((e) => !e.died);
       if (enemy) {
-        b.beAttacked(enemy);
+        enemy.beAttacked(b);
       }
     },
   };

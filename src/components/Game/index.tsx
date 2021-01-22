@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 const Game = () => {
   useEffect(() => {}, []);
 
-  return <div></div>;
+  return <div>hello</div>;
 };
 
 export default Game;
