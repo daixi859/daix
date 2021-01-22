@@ -1,28 +1,49 @@
-import Hero from './heroes/Hero';
-import Monster from './heroes/Monster';
+import Biology, { BiologyType } from './heroes/Biology';
 
 function dispatcher() {
-  const actions = {};
+  let started = false;
+  let logic = (t: number) => {};
+  let draw = (t: number) => {};
+  let heroes: Biology[] = [];
+  let monsters: Biology[] = [];
 
-  function send<T extends keyof typeof actions>(
-    msg: T,
-    ...args: Parameters<typeof actions[T]>
-  ) {
-    // @ts-ignore
-    actions[msg](...args);
+  const actions = {
+    attack(b: Biology) {
+      let enemies = b.type === BiologyType.hero ? monsters : heroes;
+      let enemy = enemies.find((e) => !e.died);
+      if (enemy) {
+        b.beAttacked(enemy);
+      }
+    },
+  };
+
+  function loop(t: number) {
+    if (!started) return;
+    logic(t);
+    draw(t);
+    requestAnimationFrame(loop);
   }
 
-  function init({
-    heroes,
-    monsters,
-  }: {
-    heroes: Hero[];
-    monsters: Monster[];
-  }) {}
-
   return {
-    send,
-    init,
+    send<T extends keyof typeof actions>(
+      msg: T,
+      ...args: Parameters<typeof actions[T]>
+    ) {
+      // @ts-ignore
+      actions[msg](...args);
+    },
+    init({ logicFn, drawFn }: { logicFn: typeof logic; drawFn: typeof draw }) {
+      logic = logicFn;
+      draw = drawFn;
+    },
+    start() {
+      if (started) return;
+      started = true;
+      requestAnimationFrame(loop);
+    },
+    end() {
+      started = false;
+    },
   };
 }
 

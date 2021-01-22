@@ -64,15 +64,15 @@ export default class Biology {
     }
   }
 
-  beDefend(damage: number) {
-    // return Math.floor(
-    //   damage *
-    //     (1 - (this.property.defend * 0.06) / (1 + 0.06 * this.property.defend))
-    // );
+  protected beDefend(damage: number) {
+    return Math.floor(
+      damage *
+        (1 - (this.property.defend * 0.06) / (1 + 0.06 * this.property.defend))
+    );
   }
 
-  beAttacked(h: Biology, damage?: number) {
-    // damage = damage !== undefined ? damage : h.attack;
+  beAttacked(enemy: Biology, damage?: number) {
+    damage = damage !== undefined ? damage : enemy.attack;
     // damage = this.beDefend(damage);
     // let prevhp = this.property.hp;
     // this.hp = this.property.hp - damage;
