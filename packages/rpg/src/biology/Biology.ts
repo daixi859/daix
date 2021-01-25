@@ -1,4 +1,5 @@
 import dispatcher from '../dispatcher';
+import AttackSkill from '../skills/AttackSkill';
 import Skill from '../skills/Skill';
 
 const initProperty = {
@@ -24,7 +25,7 @@ export default class Biology {
   type = BiologyType.hero;
   died = false;
 
-  skills: Skill = [];
+  skills: Skill[] = [];
 
   stat = {
     hurt: 0,
@@ -40,16 +41,29 @@ export default class Biology {
     send: ReturnType<typeof dispatcher>['send'];
     type?: BiologyType;
     property?: Partial<typeof initProperty>;
+    skills?: Skill[];
   }) {
     this.id = id++;
-    const { send, name, property = {}, type = BiologyType.hero } = opts;
+    const {
+      skills = [],
+      send,
+      name,
+      property = {},
+      type = BiologyType.hero,
+    } = opts;
     this.send = send;
     this.type = type;
     this.name = name;
     if (property.hp !== undefined && property.maxHp === undefined) {
       property.maxHp = property.hp;
     }
+
     this.property = Object.assign(this.property, property);
+
+    this.skills = [
+      new AttackSkill({ cool: this.property.speed }, this.property.attack),
+      ...skills,
+    ];
   }
 
   get hp() {
@@ -60,6 +74,7 @@ export default class Biology {
     if (h <= 0) {
       this.died = true;
       this.property.hp = 0;
+      this.send('died', this);
     } else if (h > this.property.maxHp) {
       this.property.hp = this.property.maxHp;
     } else {
@@ -98,7 +113,14 @@ export default class Biology {
 
   beSkillAttacked(h: Biology, damage: number) {}
 
-  logic(t: number) {}
+  logic(t: number) {
+    if (this.died) return;
+    this.skills.forEach((skill) => {
+      if (skill.canRun(t)) {
+        this.send('skillAttack', this, skill, t);
+      }
+    });
+  }
 
   draw(t: number) {}
 }

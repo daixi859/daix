@@ -1,23 +1,25 @@
 import Biology from '../biology/Biology';
 import config from '../config';
 
-export type SkillRun = (opts: {
+export type SkillRun = {
   own: Biology;
   ownTeam: Biology[];
   emenyTeam: Biology[];
   timestamp: number;
-}) => string | number | void;
+};
+
+export type SkillArgs = { name?: string; type?: SkillType; cool?: number };
 
 export enum SkillType {
   attack = 'attack',
 }
-export default class Skill {
+export default abstract class Skill {
   private cool = 1000;
   name = '攻击';
   prevTime = 0;
   type = SkillType.attack;
 
-  constructor(opts: { name?: string; type?: SkillType; cool?: 1000 }) {
+  constructor(opts: SkillArgs) {
     Object.assign(this, opts);
   }
 
@@ -33,5 +35,5 @@ export default class Skill {
     return false;
   }
 
-  run: SkillRun = () => {};
+  abstract run(opts: SkillRun): string | number | void;
 }

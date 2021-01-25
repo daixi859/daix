@@ -1,18 +1,32 @@
 import Biology, { BiologyType } from './biology/Biology';
+import Skill from './skills/Skill';
 
 function dispatcher() {
   let started = false;
-  let logic = (t: number) => {};
-  let draw = (t: number) => {};
   let heroes: Biology[] = [];
   let monsters: Biology[] = [];
+  let logic = (t: number) => {
+    heroes.forEach((b) => b.logic(t));
+    monsters.forEach((b) => b.logic(t));
+  };
+  let draw = (t: number) => {};
 
   const actions = {
-    attack(b: Biology) {
-      let enemies = b.type === BiologyType.hero ? monsters : heroes;
-      let enemy = enemies.find((e) => !e.died);
-      if (enemy) {
-        enemy.beAttacked(b);
+    skillAttack(b: Biology, skill: Skill, t: number) {
+      let myheros = heroes.filter((h) => !h.died);
+      let mymonsters = monsters.filter((h) => !h.died);
+      skill.run({
+        own: b,
+        ownTeam: b.type === 'hero' ? myheros : mymonsters,
+        emenyTeam: b.type === 'hero' ? mymonsters : myheros,
+        timestamp: t,
+      });
+    },
+    died(b: Biology) {
+      let owns = b.type === BiologyType.hero ? heroes : monsters;
+
+      if (owns.every((item) => item.died)) {
+        started = false;
       }
     },
   };
@@ -32,9 +46,22 @@ function dispatcher() {
       // @ts-ignore
       actions[msg](...args);
     },
-    init({ logicFn, drawFn }: { logicFn: typeof logic; drawFn: typeof draw }) {
-      logic = logicFn;
-      draw = drawFn;
+    init({
+      logicFn,
+      drawFn,
+      initHeroes,
+      initMonsters,
+    }: {
+      logicFn?: typeof logic;
+      drawFn?: typeof draw;
+      initHeroes: typeof heroes;
+      initMonsters: typeof monsters;
+    }) {
+      if (logicFn) logic = logicFn;
+      if (drawFn) draw = drawFn;
+
+      heroes = initHeroes;
+      monsters = initMonsters;
     },
     start() {
       if (started) return;
