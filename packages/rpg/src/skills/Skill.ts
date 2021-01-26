@@ -13,13 +13,23 @@ export type SkillArgs = { name?: string; type?: SkillType; cool?: number };
 export enum SkillType {
   attack = 'attack',
 }
+export enum SkillLogic {
+  order = 'order',
+  ratio = 'ratio',
+  less = 'less',
+}
+
+let id = 0;
 export default abstract class Skill {
   private cool = 1000;
   name = '攻击';
   prevTime = 0;
+  id: number = 0;
   type = SkillType.attack;
+  owner?: Biology;
 
   constructor(opts: SkillArgs) {
+    this.id = id++;
     Object.assign(this, opts);
   }
 

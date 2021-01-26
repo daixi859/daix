@@ -63,7 +63,10 @@ export default class Biology {
     this.skills = [
       new AttackSkill({ cool: this.property.speed }, this.property.attack),
       ...skills,
-    ];
+    ].map((skill) => {
+      skill.owner = this;
+      return skill;
+    });
   }
 
   get hp() {
@@ -98,17 +101,11 @@ export default class Biology {
     return this.property.cirtDamage;
   }
 
-  protected beDefend(damage: number) {
+  beDefend(damage: number) {
     return Math.floor(
       damage *
         (1 - (this.property.defend * 0.06) / (1 + 0.06 * this.property.defend))
     );
-  }
-
-  beAttacked(enemy: Biology, damage?: number) {
-    this.hp =
-      this.property.hp -
-      this.beDefend(damage !== undefined ? damage : enemy.getAttack());
   }
 
   beSkillAttacked(h: Biology, damage: number) {}

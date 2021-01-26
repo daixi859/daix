@@ -10,13 +10,33 @@ function main(canvas: HTMLCanvasElement) {
     send: mydis.send,
     type: BiologyType.monster,
   });
-
-  let heroes = [
-    cHero({
-      name: '英雄',
-    }),
-  ];
-  let monsters = [cMonster({ name: '牛头人' })];
+  function initBiology() {
+    return [
+      [
+        cHero({
+          name: '英雄',
+          property: {
+            hp: 200,
+            defend: 10,
+            crit: 10,
+            attack: 15,
+          },
+        }),
+      ],
+      [
+        cMonster({
+          name: '牛头人',
+          property: {
+            hp: 300,
+            defend: 5,
+            attack: 10,
+          },
+          skills: [],
+        }),
+      ],
+    ];
+  }
+  let [heroes, monsters] = initBiology();
 
   mydis.init({
     initHeroes: heroes,
@@ -30,12 +50,7 @@ function main(canvas: HTMLCanvasElement) {
   return {
     restart() {
       mydis.end();
-      let heroes = [
-        cHero({
-          name: '英雄',
-        }),
-      ];
-      let monsters = [cMonster({ name: '牛头人' })];
+      const [heroes, monsters] = initBiology();
       mydis.init({
         initHeroes: heroes,
         initMonsters: monsters,
@@ -53,6 +68,9 @@ function main(canvas: HTMLCanvasElement) {
     },
     changeSpeed(q: number) {
       config.timeSpeed = q;
+    },
+    getStat() {
+      return mydis.getStat();
     },
   };
 }

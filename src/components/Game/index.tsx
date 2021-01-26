@@ -21,7 +21,12 @@ const Game = () => {
 
   return (
     <div className={classes.wrap}>
-      <canvas ref={ref} width="600" height="400"></canvas>
+      <canvas
+        style={{ opacity: 0.05 }}
+        ref={ref}
+        width="600"
+        height="400"
+      ></canvas>
       <div className={classes.action}>
         <button
           onClick={() => {
@@ -75,6 +80,14 @@ const Game = () => {
           />
           4x
         </label>
+        <hr />
+        <button
+          onClick={() => {
+            console.log(util?.getStat());
+          }}
+        >
+          获取统计
+        </button>
       </div>
     </div>
   );
