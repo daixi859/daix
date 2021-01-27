@@ -1,5 +1,7 @@
 import { config, dispatcher, rpgUtils } from 'packages/rpg/src';
 import { BiologyType } from 'packages/rpg/src/biology/Biology';
+import AttackSkill from 'packages/rpg/src/skills/AttackSkill';
+import { SkillType } from 'packages/rpg/src/skills/Skill';
 import LiteDraw from './LiteDraw';
 
 function main(canvas: HTMLCanvasElement) {
@@ -21,6 +23,18 @@ function main(canvas: HTMLCanvasElement) {
             crit: 10,
             attack: 15,
           },
+          skills: [
+            new AttackSkill(
+              {
+                name: '英勇打击',
+                cool: 3000,
+              },
+              {
+                extraDemage: 10,
+                times: 1,
+              }
+            ),
+          ],
         }),
       ],
       [
@@ -32,6 +46,27 @@ function main(canvas: HTMLCanvasElement) {
             attack: 10,
           },
           skills: [],
+        }),
+        cMonster({
+          name: '暗影牧师',
+          property: {
+            hp: 100,
+
+            attack: 5,
+          },
+          skills: [
+            new AttackSkill(
+              {
+                name: '治疗波',
+                type: SkillType.revert,
+                cool: 3000,
+              },
+              {
+                times: 1,
+                extraDemage: 10,
+              }
+            ),
+          ],
         }),
       ],
     ];

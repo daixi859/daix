@@ -1,6 +1,6 @@
 import dispatcher from '../dispatcher';
 import AttackSkill from '../skills/AttackSkill';
-import Skill from '../skills/Skill';
+import Skill, { SkillAttack, SkillType } from '../skills/Skill';
 
 const initProperty = {
   maxHp: 100,
@@ -11,7 +11,7 @@ const initProperty = {
   cirtDamage: 2,
   coolTime: 1000,
   defend: 0,
-  skillDefend: 0,
+  magicDefend: 0,
 };
 export enum BiologyType {
   hero = 'hero',
@@ -61,7 +61,10 @@ export default class Biology {
     this.property = Object.assign(this.property, property);
 
     this.skills = [
-      new AttackSkill({ cool: this.property.speed }, this.property.attack),
+      new AttackSkill(
+        { cool: this.property.speed },
+        { attack: this.property.attack }
+      ),
       ...skills,
     ].map((skill) => {
       skill.owner = this;
@@ -101,11 +104,22 @@ export default class Biology {
     return this.property.cirtDamage;
   }
 
-  beDefend(damage: number) {
-    return Math.floor(
-      damage *
-        (1 - (this.property.defend * 0.06) / (1 + 0.06 * this.property.defend))
-    );
+  get isCrit() {
+    return this.property.crit / 100 >= Math.random();
+  }
+
+  beDefend(damage: number, type = SkillAttack.physical) {
+    if (type === SkillAttack.physical) {
+      return Math.floor(
+        damage *
+          (1 -
+            (this.property.defend * 0.06) / (1 + 0.06 * this.property.defend))
+      );
+    } else {
+      let magicDefend =
+        this.property.magicDefend > 100 ? 100 : this.property.magicDefend;
+      return Math.floor(damage * (1 - magicDefend / 100));
+    }
   }
 
   beSkillAttacked(h: Biology, damage: number) {}

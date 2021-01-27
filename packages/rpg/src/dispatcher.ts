@@ -20,6 +20,7 @@ function dispatcher() {
       [key: string]: {
         name: string;
         demage: number;
+        cure: number;
       };
     };
   } = {};
@@ -35,25 +36,34 @@ function dispatcher() {
       own,
       skill,
       demage,
+      cure,
     }: {
       own: Biology;
       skill: Skill;
-      demage: number;
+      demage?: number;
+      cure?: number;
     }) {
       if (!stat[own.id]) {
         stat[own.id] = {
           [skill.id]: {
             name: skill.name,
             demage: 0,
+            cure: 0,
           },
         };
       } else if (!stat[own.id][skill.id]) {
         stat[own.id][skill.id] = {
           name: skill.name,
           demage: 0,
+          cure: 0,
         };
       }
-      stat[own.id][skill.id].demage += demage;
+      if (demage !== undefined) {
+        stat[own.id][skill.id].demage += demage;
+      }
+      if (cure !== undefined) {
+        stat[own.id][skill.id].cure += cure;
+      }
     },
     skillAttack(b: Biology, skill: Skill, t: number) {
       let myheros = heroes.filter((h) => !h.died);

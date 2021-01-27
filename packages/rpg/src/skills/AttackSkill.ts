@@ -1,24 +1,36 @@
-import Skill, { SkillArgs, SkillLogic, SkillRun } from './Skill';
+import Skill, {
+  SkillArgs,
+  SkillAttack,
+  SkillLogic,
+  SkillRun,
+  SkillType,
+} from './Skill';
 
 export default class AttackSkill extends Skill {
-  name = '攻击';
   attack = 10;
+  number = 1; // 攻击数量
 
-  opts = {
-    number: 1,
-    type: SkillLogic.order,
-    times: 1,
-  };
+  times = 1; // 攻击倍数
+  extraDemage = 0;
 
-  constructor(args: SkillArgs, attack: number) {
+  constructor(
+    args: SkillArgs,
+    opts: {
+      attack?: number;
+      number?: number;
+      times?: number;
+      extraDemage?: number;
+    }
+  ) {
     super(args);
-    this.attack = attack;
+    Object.assign(this, opts);
   }
 
-  run({ own, emenyTeam }: SkillRun) {
-    switch (this.opts.type) {
+  run({ own, ownTeam, emenyTeam }: SkillRun) {
+    let team = this.type === SkillType.attack ? emenyTeam : ownTeam;
+    switch (this.logicType) {
       case SkillLogic.ratio:
-        emenyTeam = emenyTeam
+        team = team
           .slice()
           .sort(
             (x, y) =>
@@ -26,24 +38,32 @@ export default class AttackSkill extends Skill {
               y.property.hp / y.property.maxHp
           );
       case SkillLogic.less:
-        emenyTeam = emenyTeam
-          .slice()
-          .sort((x, y) => x.property.hp - y.property.hp);
+        team = team.slice().sort((x, y) => x.property.hp - y.property.hp);
     }
-    let emenies = emenyTeam.slice(0, this.opts.number);
+    let emenies = team.slice(0, this.number);
     emenies.forEach((emeny) => {
       if (emeny) {
         let prev = emeny.hp;
+        // logic
+        if (this.type === SkillType.attack) {
+          let demage = own.getAttack() * this.times + this.extraDemage;
+          emeny.hp =
+            emeny.property.hp - emeny.beDefend(demage, this.attackType);
+          this.owner?.send('statAttack', {
+            own: own,
+            skill: this,
+            demage: prev - emeny.hp,
+          });
+        } else {
+          emeny.hp = emeny.hp + own.getAttack() * this.times + this.extraDemage;
+          this.owner?.send('statAttack', {
+            own: own,
+            skill: this,
+            cure: emeny.hp - prev,
+          });
+        }
 
         // logic
-        emeny.hp = emeny.property.hp - emeny.beDefend(own.getAttack());
-        // logic
-
-        this.owner?.send('statAttack', {
-          own: own,
-          skill: this,
-          demage: prev - emeny.hp,
-        });
       }
     });
   }
