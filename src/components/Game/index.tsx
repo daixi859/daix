@@ -22,7 +22,7 @@ const Game = () => {
   return (
     <div className={classes.wrap}>
       <canvas
-        style={{ opacity: 0.05 }}
+        style={{ opacity: 1 }}
         ref={ref}
         width="600"
         height="400"
