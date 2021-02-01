@@ -5,4 +5,5 @@ export default {
     generateScopedName: 'daix-[local]',
   },
   extractCSS: true,
+  extraExternals: ['events'],
 };
